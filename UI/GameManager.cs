@@ -71,11 +71,13 @@ public class GameManager
                 continue;
             }
 
+            currentServant.Movement = 1;
+
             AnsiConsole.Clear();
             DrawGameState();
 
-            int MovimimientosRestantes = currentServant.Movement;
-            while (MovimimientosRestantes > 0)
+    
+            while (currentServant.Movement > 0)
             {
 
                 var direction = GetDirectionInput();
@@ -90,16 +92,21 @@ public class GameManager
 
                 if (moved)
                 {
-                    ReduceCooldownForPlayer(currentServant);
-                    MovimimientosRestantes--;
+                    currentServant.Movement--;
                 }
                 gameOver = CheckWinConditions();
-
-                if (currentServant.SkipNextTurn)
+                if (gameOver || currentServant.SkipNextTurn)
                     break;
+
             }
 
-            currentServant.Movement = 1; //Despues de salir del bucle se resetea el contador de cantidadd de movimientos a 1 nuevamente
+            if (currentServant.SkillCooldown > 0)
+            {
+                currentServant.SkillCooldown--;
+            }
+
+
+
 
             //Cambiar el turno
             if (!gameOver)
