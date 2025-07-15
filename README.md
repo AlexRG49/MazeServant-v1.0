@@ -1,7 +1,5 @@
 # Maze Servant: Laberinto del Santo Grial - README
 
-![Game Banner](https://via.placeholder.com/800x200?text=Maze+Servant+Laberinto+del+Santo+Grial)
-
 Un juego de estrategia por turnos donde dos jugadores controlan "Servants" (siervos) en un laberinto mágico, compitiendo por alcanzar el Santo Grial primero o derrotar al oponente.
 
 ## 🎮 Características Principales
