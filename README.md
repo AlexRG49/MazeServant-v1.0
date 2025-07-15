@@ -1,5 +1,7 @@
 # Maze Servant: Laberinto del Santo Grial - README
 
+![Game Banner](https://via.placeholder.com/800x200?text=Maze+Servant+Laberinto+del+Santo+Grial)
+
 Un juego de estrategia por turnos donde dos jugadores controlan "Servants" (siervos) en un laberinto mágico, compitiendo por alcanzar el Santo Grial primero o derrotar al oponente.
 
 ## 🎮 Características Principales
@@ -12,7 +14,8 @@ Un juego de estrategia por turnos donde dos jugadores controlan "Servants" (sier
 - Modo de ataque a distancia
 
 ## 🚀 Requisitos del Sistema
-- .NET 5.0 SDK o superior
+- **.NET 5.0 SDK** o superior
+- **Spectre.Console** (se instalará automáticamente)
 - Sistema operativo: Windows, Linux o macOS
 - Terminal con soporte para caracteres Unicode
 
@@ -25,13 +28,17 @@ git clone https://github.com/tu-usuario/maze-servant.git
 ```bash
 cd maze-servant
 ```
-3. Compila el proyecto:
+3. Instala la dependencia de Spectre.Console:
+```bash
+dotnet add package Spectre.Console
+```
+4. Compila el proyecto:
 ```bash
 dotnet build
 ```
-4. Ejecuta el juego:
+5. Ejecuta el juego:
 ```bash
-dotnet run --project Program.cs
+dotnet run
 ```
 
 ## 🕹️ Cómo Jugar
