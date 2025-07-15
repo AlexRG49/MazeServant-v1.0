@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "yX09D+82hVk=",
+  "success": true,
+  "projectFilePath": "D:\\Escuela\\Juegodepingaeste\\MazeServant v0.9\\MazeServant v0.9.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\alexy\\.nuget\\packages\\spectre.console\\0.50.0\\spectre.console.0.50.0.nupkg.sha512",
+    "C:\\Users\\alexy\\.nuget\\packages\\system.memory\\4.6.3\\system.memory.4.6.3.nupkg.sha512"
+  ],
+  "logs": []
+}

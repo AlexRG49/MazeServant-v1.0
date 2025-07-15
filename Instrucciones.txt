@@ -1,0 +1,21 @@
+El siguiente juego esta basado en la aclamada saga de Fate, 
+conocidad por su gran identidad y personajes, el eje central 
+del juego se centra en un Laberinto Magico en el cual se 
+generarn 2 servants los cuales seran elegidos en un selector 
+de personaje de 5 de los 7 principals servants, el incentivo
+principal para hacerse con la Victoria esta basado en reducir
+los puntos de vida del servant contrario a 0 o alcanzar el
+Santo Grial justo en el centro del laberinto.Cada Servant cuenta
+con una vida, ataque basico, habilidad especial  y turno para moverse.
+
+Las caracteristicas de los personajes se encuentran en el selector
+de personaje, no obstante el efecto de la habilidad especial de 
+cada uno seria:
+
+Saber(Excalibuur): Efectua un ataque desmedido contra su oponente que tiene un rando de 2 Casillas de direeccion(65).
+Archer(Tiro Certero): Ejecuta un ataque en un radio de 3x3 Casillas(40).
+Lancer(Gae Bolg): Lanza directo al corazon del oponente que se ejecuta a 5 filas o columnas de distancia(50).
+Rider(Bellerophon):Llama a una montura especial que le permite moverse en cualquier casilla sin importar paredes dentro del rango de 3x2 casillas.
+Berserker(Furia): Le da a Berserk movimientos extra debido a la potenciacion de sus habilidades fisicas.
+
+(El rango para Attack es de 2 casillas)

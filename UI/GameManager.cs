@@ -7,6 +7,8 @@ using Spectre.Console;
 using System.Text;
 
 
+
+
 namespace MaestroDelJuego;
 
 public class GameManager
@@ -72,10 +74,32 @@ public class GameManager
             AnsiConsole.Clear();
             DrawGameState();
 
-            var direction = GetDirectionInput();
-            MovePlayer(currentServant, direction);
+            int MovimimientosRestantes = currentServant.Movement;
+            while (MovimimientosRestantes > 0)
+            {
 
-            gameOver = CheckWinConditions();
+                var direction = GetDirectionInput();
+                bool moved = false;
+                if (direction == Direction.Attack)
+                    SetAttack(currentServant);
+
+                else if (direction == Direction.Skill)
+                    ActivateSkill(currentServant);
+
+                else moved = MovePlayer(currentServant, direction);
+
+                if (moved)
+                {
+                    ReduceCooldownForPlayer(currentServant);
+                    MovimimientosRestantes--;
+                }
+                gameOver = CheckWinConditions();
+
+                if (currentServant.SkipNextTurn)
+                    break;
+            }
+
+            currentServant.Movement = 1; //Despues de salir del bucle se resetea el contador de cantidadd de movimientos a 1 nuevamente
 
             //Cambiar el turno
             if (!gameOver)
@@ -117,24 +141,177 @@ public class GameManager
 
     }
 
+    //Metodo para implementar el ataque basico del servant
+    private void SetAttack(Servant attacker) {
+        Servant target = attacker == servant1 ? servant2 : servant1; //Indica que servant es el atacante
+
+        int distance = Math.Abs(attacker.Position.X - target.Position.X) + Math.Abs(attacker.Position.Y - target.Position.Y);//Determina la distancia entre atacante y objetivo
+
+        //Verifica si sera posible o no atacar
+        if (distance <= 2)
+        {
+            target.Hp -= attacker.Attack;
+
+            StatusMessage = $"[red]{attacker.Name} ha atacado a {target.Name}, causando {attacker.Attack} de danno[/]";
+        }
+
+        else
+        {
+            StatusMessage = $"[red]El objetivo esta fuera de rango[/]";
+        }
+    }
+
+
+
+
+
+    //Metodo que da validez a la activazion de la habilidad del servant
+    private void ActivateSkill(Servant servant)
+    {
+        if (!servant.CanUseSkill)
+        {
+            StatusMessage = $"[red]El servant {servant.Name} no puede usar su habilidad[/]";
+
+            return;
+        }
+
+        Servant target = servant == servant1 ? servant2 : servant1;
+        bool success = false; //variable de control para saber si se uso la habilidad
+
+        switch (servant.ClassName)
+        {
+            case "Saber"://Ataque a enemigo cercano de 65 de danno
+                if (IsAdjacent(servant.Position, target.Position))
+                {
+                    target.Hp -= 65;
+                    success = true;
+                }
+                break;
+
+            case "Archer"://Ataque a distancia de 40 de danno(3x3 casillas)
+                if (IsInRange(servant.Position, target.Position, 3))
+                {
+                    target.Hp -= 40;
+                    success = true;
+                }
+                break;
+
+            case "Lancer"://Ataque en linea recta de 50 de danno(hasta 5 casillas)
+                if (IsInLine(servant.Position, target.Position, 5))
+                {
+                    target.Hp -= 50;
+                    success = true;
+                }
+                break;
+
+            case "Rider"://Teletransporta a Rider en un rango de 3x2 casillas
+                success = TeleportRider(servant, 3, 2);
+                break;
+
+            case "Berserker": //Berserker podra hacer 2 movimientos este turno
+                servant.Movement += 2;
+                success = true;
+                StatusMessage = $"[green]{servant.Name} puede moverse 2 veces este turno[/]";
+                break;
+        }
+
+        if (success)
+        {
+            servant.SkillCooldown = 4;
+
+            StatusMessage = $"[gold1]{servant.Name} usa {servant.Skill}[/]";
+        }
+
+        else {
+                StatusMessage = $"[red]No se puede usar la habilidad en este momento[/]";
+            }
+
+    }
+
+    private void ReduceCooldownForPlayer(Servant movedServant)
+    {
+        if (movedServant.SkillCooldown > 0)
+            movedServant.SkillCooldown--;
+  
+
+    }
+
+    private bool IsAdjacent((int X, int Y) pos1, (int X, int Y) pos2)//booleano que valida el rango de posicion mediante el calculo de valor absoluto(maximo 2 casillas en cada direccion)
+    {
+        return Math.Abs(pos1.X - pos2.X) <= 2 && Math.Abs(pos1.Y - pos2.Y) <= 2;
+    }
+
+    private bool IsInRange((int X, int Y) pos1, (int X, int Y) pos2, int range)//retornara true si el objetivo esta dentro del rango de archer(cuadrado de amplitud range)
+    {
+        return Math.Abs(pos1.X - pos2.X) <= range && Math.Abs(pos1.Y - pos2.Y) <= range;
+    }
+
+    private bool IsInLine((int X, int Y) start, (int X, int Y) end, int maxDistance)
+    {
+        //Booleano que comprobara que esten en la misma fila o columna y retornara true si hay una distancia de 5 o menos
+        if (start.X != end.X && start.Y != end.Y) return false;
+
+        int distance = Math.Abs(start.X - end.X) + Math.Abs(start.Y - end.Y);
+        return distance <= maxDistance && distance > 0;
+    }
+
+    private bool TeleportRider(Servant servant, int deltaX, int deltaY)
+    {
+        var choices = new List<(int X, int Y)>();//lista de todas las posibles posiciones a las que se puede mover
+
+        //Genera todas las posiciones dentro del rango permitido
+        for (int x = Math.Max(0,servant.Position.X - deltaX); x <= Math.Min(maze.Rows-1, servant.Position.X + deltaX); x++)
+        {
+            for (int y = Math.Max(0,servant.Position.Y - deltaY); y <= Math.Min(maze.Columns-1, servant.Position.Y + deltaY); y++)
+            {
+                if (x == servant.Position.X && y == servant.Position.Y)//Condicional para que no se transporte a su posicion actual
+                    continue;
+
+                if (x == goalX && y == goalY) //Condicional para que no se pueda transportar directamente al Santo Grial
+                    continue;
+
+                if (playerPositionMask[x, y] != 0) //Condicional para que no se teletransporte sobre otro jugador
+                    continue;
+
+                choices.Add((x, y));
+            }
+        }
+
+        //Mostrar menu para poder trasladarse a la posicion deseada
+        var newPos = AnsiConsole.Prompt(new SelectionPrompt<(int X, int Y)>()
+        .Title($"[blue]Selecciona una casilla para que {servant.Name} vuele a ella[/]")
+        .PageSize(10)
+        .UseConverter(pos => $"Fila: {pos.X}, Columna: {pos.Y}")
+        .AddChoices(choices));
+
+        //Actualizar la posicion en el laberinto y la mascara
+        servant.Position = newPos;
+        UpdatePlayerMask();
+
+        return true;
+    }
+
     //Metodo que solicita al jugador que elija una direccion 
     private Direction GetDirectionInput()
     {
         return AnsiConsole.Prompt(new SelectionPrompt<Direction>()
         .Title($"[yellow]Turno de {currentServant.Name} ({currentServant.ClassName}) [/]")
-        .PageSize(4)
+        .PageSize(6)
         .UseConverter(d => d switch
         {
             Direction.Norte => "Arriba (↑)",
             Direction.Sur => "Abajo(↓)",
             Direction.Este => "Derecha(→)",
-            Direction.Oeste => "Izquierda(←)"
+            Direction.Oeste => "Izquierda(←)",
+            Direction.Attack => "Atacar",
+            Direction.Skill => "Usar Habilidad",
+            _ => d.ToString()
         })
         .AddChoices(Enum.GetValues<Direction>()));
     }
 
     //MovePlayer: Define al programa en que direccion se movera el jugador
-    private void MovePlayer(Servant servant, Direction direction)
+    private bool MovePlayer(Servant servant, Direction direction)
     {
         var (x, y) = servant.Position;
 
@@ -153,7 +330,7 @@ public class GameManager
         if (!maze.CanMove(x, y, newPos.Item1, newPos.Item2))
         {
             StatusMessage = "[red]Movimiento invalido[/]";
-            return;
+            return false;
         }
 
         servant.Position = newPos; //Actualiza la posicion del servant
@@ -161,6 +338,7 @@ public class GameManager
 
         CheckTrap(servant);
         StatusMessage = $"[green]{servant.Name} se movio a ({newPos.Item1},{newPos.Item2}) [/]";
+        return true; //movimiento exitoso
     }
 
     //CheckTrap: Verificando si el jugador cayo en una trampa
@@ -329,7 +507,7 @@ public class GameManager
             $"{servant1.Hp}",
             $"{servant1.Movement}",
             $"{servant1.Attack}",
-            $"{servant1.Skill}",
+            $"{servant1.Skill} (CD: {servant1.SkillCooldown})",
             $"({servant1.Position.X}, {servant1.Position.Y})"
         )
 
@@ -339,7 +517,7 @@ public class GameManager
             $"{servant2.Hp}",
             $"{servant2.Movement}",
             $"{servant2.Attack}",
-            $"{servant2.Skill}",
+            $"{servant2.Skill} (CD: {servant2.SkillCooldown})",
             $"({servant2.Position.X}, {servant2.Position.Y})"
         );
 

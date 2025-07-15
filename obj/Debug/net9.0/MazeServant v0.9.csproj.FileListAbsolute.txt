@@ -1,0 +1,17 @@
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\bin\Debug\net9.0\MazeServant v0.9.exe
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\bin\Debug\net9.0\MazeServant v0.9.deps.json
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\bin\Debug\net9.0\MazeServant v0.9.runtimeconfig.json
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\bin\Debug\net9.0\MazeServant v0.9.dll
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\bin\Debug\net9.0\MazeServant v0.9.pdb
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\obj\Debug\net9.0\MazeServant v0.9.GeneratedMSBuildEditorConfig.editorconfig
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\obj\Debug\net9.0\MazeServant v0.9.AssemblyInfoInputs.cache
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\obj\Debug\net9.0\MazeServant v0.9.AssemblyInfo.cs
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\obj\Debug\net9.0\MazeServant v0.9.csproj.CoreCompileInputs.cache
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\obj\Debug\net9.0\MazeServant v0.9.dll
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\obj\Debug\net9.0\refint\MazeServant v0.9.dll
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\obj\Debug\net9.0\MazeServant v0.9.pdb
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\obj\Debug\net9.0\MazeServant v0.9.genruntimeconfig.cache
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\obj\Debug\net9.0\ref\MazeServant v0.9.dll
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\bin\Debug\net9.0\Spectre.Console.dll
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\obj\Debug\net9.0\MazeServant v0.9.csproj.AssemblyReference.cache
+D:\Escuela\Juegodepingaeste\MazeServant v0.9\obj\Debug\net9.0\MazeServ.8D6E48D7.Up2Date
