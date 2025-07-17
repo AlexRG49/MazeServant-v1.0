@@ -81,7 +81,7 @@ class Program
                 new SelectionPrompt<Servant>()
                 .Title("Selecciona un Servant:")
                 .PageSize(5)
-                .UseConverter(p => $"{p.Name} ({p.ClassName}) - Hp:{p.Hp} |Attack {p.Attack} |Mov {p.Movement}")
+                .UseConverter(p => $"{p.Name} ({p.ClassName}) - Hp:{p.Hp} |Attack {p.Attack}")
                 .AddChoices(servant)
             );
 
@@ -91,12 +91,12 @@ class Program
                 new SelectionPrompt<Servant>()
                 .Title("Selecciona un Servant:")
                 .PageSize(5)
-                .UseConverter(p => $"{p.Name} ({p.ClassName}) - Hp:{p.Hp} |Attack {p.Attack} |Mov {p.Movement}")
+                    .UseConverter(p => $"{p.Name} ({p.ClassName}) - Hp:{p.Hp} |Attack {p.Attack}")
                 .AddChoices(servant)
             );
 
              //Empezar el juego
-            var game = new GameManager(15, servant1, servant2);
+            var game = new GameManager(10, servant1, servant2);
             game.StartGame();
             
 

@@ -76,19 +76,36 @@ public class GameManager
             AnsiConsole.Clear();
             DrawGameState();
 
-    
+
             while (currentServant.Movement > 0)
             {
 
                 var direction = GetDirectionInput();
                 bool moved = false;
                 if (direction == Direction.Attack)
+                {
                     SetAttack(currentServant);
+                    currentServant.Movement = 0; //Corregido para que deje de poder moverse una vez ataque igual que en ActivateSkill
+                }
 
                 else if (direction == Direction.Skill)
+                {
                     ActivateSkill(currentServant);
+                    currentServant.Movement = 0;
+                }
 
                 else moved = MovePlayer(currentServant, direction);
+
+                if (!string.IsNullOrEmpty(StatusMessage)) //Mostrar mensaje si hay despues de la accion
+                {
+                    AnsiConsole.Clear();
+                    DrawGameState(); //Redibuja la consola y muestra el mensaje
+                    AnsiConsole.MarkupLine(StatusMessage);
+                    //StatusMessage = ""; //Limpia para el siguiente mensaje
+                    //Console.ReadKey();
+                }
+
+
 
                 if (moved)
                 {
@@ -192,6 +209,8 @@ public class GameManager
                 {
                     target.Hp -= 65;
                     success = true;
+
+                    StatusMessage = $"[gold1] {servant.Name} ha usado {servant.Skill}[/]";
                 }
                 break;
 
@@ -200,6 +219,8 @@ public class GameManager
                 {
                     target.Hp -= 40;
                     success = true;
+
+                    StatusMessage = $"Emiya Chirou ha dado un gran disparo a su oponente";
                 }
                 break;
 
@@ -208,6 +229,7 @@ public class GameManager
                 {
                     target.Hp -= 50;
                     success = true;
+                    StatusMessage = $"[red]{servant.Name} ha atacado con {servant.Skill}[/]";
                 }
                 break;
 
@@ -226,20 +248,12 @@ public class GameManager
         {
             servant.SkillCooldown = 4;
 
-            StatusMessage = $"[gold1]{servant.Name} usa {servant.Skill}[/]";
+           // StatusMessage = $"[gold1]{servant.Name} usa {servant.Skill}[/]";
         }
 
         else {
                 StatusMessage = $"[red]No se puede usar la habilidad en este momento[/]";
             }
-
-    }
-
-    private void ReduceCooldownForPlayer(Servant movedServant)
-    {
-        if (movedServant.SkillCooldown > 0)
-            movedServant.SkillCooldown--;
-  
 
     }
 
@@ -256,10 +270,17 @@ public class GameManager
     private bool IsInLine((int X, int Y) start, (int X, int Y) end, int maxDistance)
     {
         //Booleano que comprobara que esten en la misma fila o columna y retornara true si hay una distancia de 5 o menos
-        if (start.X != end.X && start.Y != end.Y) return false;
 
-        int distance = Math.Abs(start.X - end.X) + Math.Abs(start.Y - end.Y);
-        return distance <= maxDistance && distance > 0;
+        if ((start.X == end.X && start.Y != end.Y) || (start.X != end.X && start.Y == end.Y)) //Cambie el metodo por un par de if anidados asi siempre se cumplira
+        {                                                                                     //que si no estan en la misma columna o fila retorna false y de suceder la distacia en el eje comun debe ser menor que MaxDistance
+            int distance = Math.Abs(start.X - end.X) + Math.Abs(start.Y - end.Y);
+            if (distance <= maxDistance && distance > 0)
+            {
+                return true;
+            }
+            else return false;
+        }
+        else return false;
     }
 
     private bool TeleportRider(Servant servant, int deltaX, int deltaY)
@@ -293,6 +314,7 @@ public class GameManager
 
         //Actualizar la posicion en el laberinto y la mascara
         servant.Position = newPos;
+        DrawGameState();
         UpdatePlayerMask();
 
         return true;
@@ -501,7 +523,7 @@ public class GameManager
         .AddColumn("Jugador")
         .AddColumn("Clase")
         .AddColumn("Hp")
-        .AddColumn("Movimiento")
+        //.AddColumn("Movimiento")
         .AddColumn("Ataque")
         .AddColumn("Habilidad")
         .AddColumn("Posicion")
@@ -512,7 +534,7 @@ public class GameManager
             servant1.Name.Substring(0, Math.Min(10, servant1.Name.Length)),
             servant1.ClassName,
             $"{servant1.Hp}",
-            $"{servant1.Movement}",
+            //$"{servant1.Movement}",
             $"{servant1.Attack}",
             $"{servant1.Skill} (CD: {servant1.SkillCooldown})",
             $"({servant1.Position.X}, {servant1.Position.Y})"
@@ -522,7 +544,7 @@ public class GameManager
             servant2.Name.Substring(0, Math.Min(10, servant2.Name.Length)),
             servant2.ClassName,
             $"{servant2.Hp}",
-            $"{servant2.Movement}",
+            //$"{servant2.Movement}",
             $"{servant2.Attack}",
             $"{servant2.Skill} (CD: {servant2.SkillCooldown})",
             $"({servant2.Position.X}, {servant2.Position.Y})"
@@ -530,8 +552,10 @@ public class GameManager
 
         AnsiConsole.Write(table);
 
-        if (!string.IsNullOrEmpty(StatusMessage)) {
-            AnsiConsole.MarkupLine(StatusMessage);  
+        if (!string.IsNullOrEmpty(StatusMessage))
+        {
+            AnsiConsole.MarkupLine(StatusMessage);
+            //StatusMessage = ""; 
         }
         
     }
