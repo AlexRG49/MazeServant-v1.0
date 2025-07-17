@@ -23,7 +23,7 @@ public class GameManager
     private readonly int[,] playerPositionMask;
     private readonly Trap[,] trapMask;
 
-    private Servant currentServant; //Jugador que posee el turno
+    private Servant? currentServant; //Jugador que posee el turno, agregado el ? para que una vez compile la clase aunque lo detecte nulo, en algun momento se le asignara un valor
     private string StatusMessage = ""; //Mensaje de estado que se mostrara en la consola
 
     //Constructor que iniciara el juego con un tamanno n del laberinto
@@ -91,7 +91,11 @@ public class GameManager
                 else if (direction == Direction.Skill)
                 {
                     ActivateSkill(currentServant);
-                    currentServant.Movement = 0;
+
+                    if (currentServant.ClassName != "Berserker")
+                    {
+                        currentServant.Movement = 0;
+                    }
                 }
 
                 else moved = MovePlayer(currentServant, direction);
@@ -101,8 +105,6 @@ public class GameManager
                     AnsiConsole.Clear();
                     DrawGameState(); //Redibuja la consola y muestra el mensaje
                     AnsiConsole.MarkupLine(StatusMessage);
-                    //StatusMessage = ""; //Limpia para el siguiente mensaje
-                    //Console.ReadKey();
                 }
 
 
